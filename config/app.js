@@ -4,6 +4,9 @@ const db = require("./database")
 const app = express()
 const morgan = require("morgan")
 
+//Include routes
+const indexRoute = require("../api/routes/index")
+
 //Catch database error
 db.on("error", (error)=>{
     console.error(error)
@@ -31,6 +34,7 @@ app.use((req, res, next)=>{
       next()
 })
 
+app.use("/", indexRoute)
 //Handling Errors
 //404
 app.use((req, res, next)=>{
