@@ -1,21 +1,13 @@
 const router = require("express").Router()
+const {registerUser, loginUser, googleSignIn, logout} = 
+    require("../app/https/requests/authRequest")
 
-router.post("/login", (req, res)=>{
-    res.status(201).json({
-        message: "Login Successful"
-    })
-})
+router.post("/login", loginUser)
 
-router.post("/register", (req, res)=>{
-    res.status(201).json({
-        message: "Registration sucessful"
-    })
-})
+router.post("/register", registerUser)
 
-router.get("/logout", (req, res)=>{
-    res.status(200).json({
-        message: "User logged out"
-    })
-})
+router.post("/google", googleSignIn)
+
+router.get("/logout", logout)
 
 module.exports = router
