@@ -1,5 +1,5 @@
 const User = require("../../../models/User")
-const signToken = require("../others/tokenizer")
+const signToken = require("../others/tokenizer").signToken
 require("dotenv").config()
 
 //Register User
@@ -15,8 +15,8 @@ const registerUser = async (req, res)=>{
 
     try{
         const savedUser = await user.save()
+        const {password, ...others} = savedUser._doc
         const accessToken = signToken(savedUser)
-        const {password, ...others} = savedUser
         return res.status(201).json({
             output: {others, accessToken},
             requests: [{
@@ -44,7 +44,7 @@ const loginUser = async (req, res)=>{
         if(req.body.password != user.password){
             return res.status(401).json({message: "Invalid password"})
         }
-        const {password, ...others} = user
+        const {password, ...others} = user._doc
         const accessToken = signToken(user)
         return res.status(200).json({output: {others, accessToken},
         requests: {

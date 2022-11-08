@@ -12,6 +12,7 @@ const signToken = (user)=>{
 const tokenResult = (req, res, next)=>{
     const authHeader = req.headers.tokenResult
     if(authHeader){
+        const token = authHeader.split(" ")[1]
         jwt.verify(token, process.env.JWT_SECRET_KEY, (err, user)=>{
             if(err) return res.status(403).json("Invalid Token")
             req.user = user

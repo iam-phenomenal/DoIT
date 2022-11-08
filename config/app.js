@@ -6,7 +6,9 @@ const morgan = require("morgan")
 
 //Include routes
 const indexRoute = require("../api/routes/index")
-const authRoute = require("../api/routes/auth") 
+const authRoute = require("../api/routes/auth")
+const userRoute = require("../api/routes/users")
+
 //Catch database error
 db.on("error", (error)=>{
     console.error(error)
@@ -37,6 +39,8 @@ app.use((req, res, next)=>{
 //Use Routes
 app.use("/", indexRoute)
 app.use("/auth", authRoute)
+app.use("/user", userRoute)
+
 //Handling Errors
 //404
 app.use((req, res, next)=>{
