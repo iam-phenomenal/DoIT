@@ -1,6 +1,7 @@
 const mongoose = require("mongoose")
 
 const ProductSchema = new mongoose.Schema({
+    userID: {type:String, required: true},
     name: {type: String, unique: true, required: true},
     desc: {type: String, required: true},
     tasks: {type: Array},

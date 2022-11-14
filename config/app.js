@@ -15,7 +15,7 @@ db.on("error", (error)=>{
 })
 //Initializing database
 db.once("open", ()=>{
-    console.log("Databas connection successful")
+    console.log("Database connection successful")
 })
 
 //Initializing body parsers
