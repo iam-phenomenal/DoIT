@@ -1,26 +1,24 @@
 const User = require("../../../models/User")
 const signToken = require("../others/tokenizer").signToken
 const sendMail = require("../controller/emailConfirmation")
+const imageUpload = require("../controller/imageProcessing")
 const {hashPassword, verifyPassword} = require("../others/hasher")
 require("dotenv").config()
 const fs = require("fs")
 const path = require("path")
 
+
 //Register User
 const registerUser = async (req, res)=>{
     //get user password
-    const hashedPass = await hashPassword((req.body.password).toString())
+
+    const hashedPass = await hashPassword((req.body.password))
     //get user info
     const user = new User({
         username: req.body.username,
         email: req.body.email,
         password: hashedPass,
         phone: req.body.phone,
-        profileIMG: {
-            data: fs.readFileSync(path.join(__dirname + "/uploads/" + 
-            req.file.filename)),
-            contentType: "image/png"
-        }
     })
     
     //if no error

@@ -4,7 +4,7 @@ const {registerUser, loginUser, googleSignIn, logout} =
 
 router.post("/login", loginUser)
 
-router.post("/register", registerUser)
+router.post("/register", upload, registerUser)
 
 router.post("/google", googleSignIn)
 

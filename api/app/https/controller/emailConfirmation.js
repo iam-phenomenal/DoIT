@@ -1,13 +1,19 @@
 const nodemailer = require("nodemailer")
 
+let testAccount = nodemailer.createTestAccount()
 const transporter = nodemailer.createTransport({
-    service: "Gmail",
+    host: "smtp.ethereal.email",
+    port: 578,
+    secure: false,
     auth: {
-        user: process.env.GMAIL_USERNAME,
-        pass: process.env.GMAIL_PASSWORD
+        user: testAccount.user,
+        pass: testAccount.pass
     }
 })
 
+let info = await transporter.sendMail({
+    from: '"DoIT" <foo@example.com',
+})
 const sendMail = async(email, accessToken)=>{
     try{
         const url= `http://localhost:3000/confirmation/${accessToken}`
