@@ -1,11 +1,8 @@
 const User = require("../../../models/User")
 const signToken = require("../others/tokenizer").signToken
-const sendMail = require("../controller/emailConfirmation")
-const imageUpload = require("../controller/imageProcessing")
+// const sendMail = require("../controller/emailConfirmation")
 const {hashPassword, verifyPassword} = require("../others/hasher")
 require("dotenv").config()
-const fs = require("fs")
-const path = require("path")
 
 
 //Register User
@@ -19,27 +16,32 @@ const registerUser = async (req, res)=>{
         email: req.body.email,
         password: hashedPass,
         phone: req.body.phone,
+        profileImage: {
+            data: req.file.filename,
+            contentType: "image/png"
+        }
     })
     
-    //if no error
     try{
         //save fetched info
         const savedUser = await user.save()
+        const {password, ...others} = savedUser._doc
         //send confirmation mail
         const accessToken = signToken(user)
         //send mail
-        const mail_result = sendMail(savedUser.email, accessToken)
-        //output result
-        if(!mail_result) return res.status(401).json({
-            error: "Email confirmation failed",
-            request: {
-                type: "GET",
-                description: "Send new confirmation email",
-                url: `http://localhost:${process.env.PORT}/activate/${savedUser.id}`
-            }
-        })
+        // const mail_result = sendMail(savedUser.email, accessToken)
+        // //output result
+        // if(!mail_result) return res.status(401).json({
+        //     error: "Email confirmation failed",
+        //     request: {
+        //         type: "GET",
+        //         description: "Send new confirmation email",
+        //         url: `http://localhost:${process.env.PORT}/activate/${savedUser.id}`
+        //     }
+        // })
         return res.status(201).json({
-            output: "Confirmation email sent.",
+            // output: "Confirmation email sent.",
+            output: {others, accessToken},
             //add request options
             requests: [{
                 type: "POST",

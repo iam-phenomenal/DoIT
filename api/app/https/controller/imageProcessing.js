@@ -1,19 +1,14 @@
 const multer = require("multer")
 
-
 const Storage = multer.diskStorage({
-    destination: "uploads",
+    destination: (req, file, cb)=>{
+        cb(null, "./uploads")
+    },
     filename: (req, file, cb)=>{
-        cb(null, file.originalname)
+        cb(null, file.fieldname + "-" + Date.now())
     }
 })
 
-const upload = multer({storage: Storage}).single("profileImage")
+const uploadImg = multer({storage: Storage}).single("profileImage")
 
-const imageUpload = async(req, res, next){
-    upload(req, res, (err)=>{
-        if(err) return res.stat
-    })
-}
-
-module.exports = upload
+module.exports = uploadImg
