@@ -24,18 +24,18 @@ const tokenResult = (req, res, next)=>{
 }
 
 const tokenAuthentication = (req, res, next) =>{
-    this.tokenResult(req, res, ()=>{
+    tokenResult(req, res, ()=>{
         if(req.user.id === req.params.id) next()
         else return res.status(403).json("Permission denied")
     })
 }
 
 const adminVerification = (req, res, next) => {
-    this.tokenResult(req, res, ()=>{
+    tokenResult(req, res, ()=>{
         if(req.user.admin) return next()
         else return res.status(401).json("Permission denied")
     })
 }
 
-module.exports = {signToken, tokenResult, tokenAuthentication, adminVerification}
+module.exports = {signToken, tokenAuthentication, adminVerification}
 

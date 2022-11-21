@@ -1,25 +1,24 @@
 const User = require("../../../models/User")
-const signToken = require("../others/tokenizer").signToken
-// const sendMail = require("../controller/emailConfirmation")
+const {validationResult} = require("express-validator")
+const {signToken} = require("../others/tokenizer")
 const {hashPassword, verifyPassword} = require("../others/hasher")
 require("dotenv").config()
 
 
 //Register User
 const registerUser = async (req, res)=>{
+    const errors = validationResult(req)
+    if(!errors.isEmpty()){
+        return res.status(422).json({errors: errors.array()})
+    }
     //get user password
-
     const hashedPass = await hashPassword((req.body.password))
     //get user info
     const user = new User({
         username: req.body.username,
         email: req.body.email,
         password: hashedPass,
-        phone: req.body.phone,
-        profileImage: {
-            data: req.file.filename,
-            contentType: "image/png"
-        }
+        phone: req.body.phone
     })
     
     try{
@@ -28,17 +27,7 @@ const registerUser = async (req, res)=>{
         const {password, ...others} = savedUser._doc
         //send confirmation mail
         const accessToken = signToken(user)
-        //send mail
-        // const mail_result = sendMail(savedUser.email, accessToken)
-        // //output result
-        // if(!mail_result) return res.status(401).json({
-        //     error: "Email confirmation failed",
-        //     request: {
-        //         type: "GET",
-        //         description: "Send new confirmation email",
-        //         url: `http://localhost:${process.env.PORT}/activate/${savedUser.id}`
-        //     }
-        // })
+        
         return res.status(201).json({
             // output: "Confirmation email sent.",
             output: {others, accessToken},
@@ -61,10 +50,13 @@ const registerUser = async (req, res)=>{
         })
     }
 }
-//Email confirmation:
 
 //Login User
 const loginUser = async (req, res)=>{
+    const errors = validationResult(req)
+    if(!errors.isEmpty()){
+        return res.status(422).json({errors: errors.array()})
+    }
     //no error occured
     try{
         //search user's model by username
@@ -72,7 +64,8 @@ const loginUser = async (req, res)=>{
         //if user found 
         if(!user) return res.status(401).json({message: "Invalid Username"})
         //password verification failed
-        if(req.body.password != user.password){
+        const verifiedPass = verifyPassword(req.body.password, user.password)
+        if(!verifiedPass){
             //output error
             return res.status(401).json({message: "Invalid password"})
         }
@@ -110,6 +103,7 @@ const googleSignIn = (req, res) =>{
 //Logout
 const logout = (req, res)=>{
     try{
+        req.logout
         return res.status(200).json({message: "User logged out"})
     }catch(err){
         return res.status(500).json({error: err.message})
@@ -117,3 +111,14 @@ const logout = (req, res)=>{
 }
 
 module.exports = {registerUser, loginUser, googleSignIn, logout}
+
+
+/*
+What's left
+--------------
+Input validation with express-validator
+Email confirmation
+google sign In
+sign out procedure
+
+*/

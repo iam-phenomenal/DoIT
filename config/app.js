@@ -8,6 +8,7 @@ const morgan = require("morgan")
 const indexRoute = require("../api/routes/index")
 const authRoute = require("../api/routes/auth")
 const userRoute = require("../api/routes/users")
+const taskRoute = require("../api/routes/tasks")
 
 //Catch database error
 db.on("error", (error)=>{
@@ -40,6 +41,8 @@ app.use((req, res, next)=>{
 app.use("/", indexRoute)
 app.use("/auth", authRoute)
 app.use("/user", userRoute)
+app.use("/tasks/:userid", taskRoute)
+
 
 //Handling Errors
 //404

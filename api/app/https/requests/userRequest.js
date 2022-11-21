@@ -1,4 +1,5 @@
 const User = require("../../../models/User")
+const Task = require("../../../models/Task")
 
 //Update user
 const updateUser = async (req, res) =>{
@@ -28,8 +29,10 @@ const updateUser = async (req, res) =>{
 
 //Delete user
 const delUser = async (req, res)=>{
+    const userID = req.params.userid
     try{
-        await User.findByIdAndDelete(req.params.userid)
+        await Task.findByIdAndDelete(userID)
+        await User.findByIdAndDelete(userID)
         return res.status(200).json({
             message: "User deleted",
             requests: [{
